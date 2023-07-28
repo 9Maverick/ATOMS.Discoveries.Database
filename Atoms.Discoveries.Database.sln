@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33424.131
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atoms.Discoveries.Database.API", "Atoms.Discoveries.Database.API\Atoms.Discoveries.Database.API.csproj", "{6070E4B6-837C-4004-9C20-67FDE5593E79}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atoms.Discoveries.Database.Data", "ATOMS.Discoveries.Database.Data\Atoms.Discoveries.Database.Data.csproj", "{A5D489A0-7C7D-4061-AE58-353139C40E4B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atoms.Discoveries.Database.Domain", "ATOMS.Discoveries.Database.Domain\Atoms.Discoveries.Database.Domain.csproj", "{350B61DC-CAB0-453E-ADED-0888EF23C84F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atoms.Discoveries.Database.Infrastructure", "ATOMS.Discoveries.Database.Infrastructure\Atoms.Discoveries.Database.Infrastructure.csproj", "{735AD6F7-CF9E-4106-996B-52798CD018C5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atoms.Discoveries.Database.SharedKernel", "ATOMS.Discoveries.Database.SharedKernel\Atoms.Discoveries.Database.SharedKernel.csproj", "{A0E705F4-A528-4559-8EFD-175E95D34AC9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6070E4B6-837C-4004-9C20-67FDE5593E79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6070E4B6-837C-4004-9C20-67FDE5593E79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6070E4B6-837C-4004-9C20-67FDE5593E79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6070E4B6-837C-4004-9C20-67FDE5593E79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5D489A0-7C7D-4061-AE58-353139C40E4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5D489A0-7C7D-4061-AE58-353139C40E4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5D489A0-7C7D-4061-AE58-353139C40E4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5D489A0-7C7D-4061-AE58-353139C40E4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{350B61DC-CAB0-453E-ADED-0888EF23C84F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{350B61DC-CAB0-453E-ADED-0888EF23C84F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{350B61DC-CAB0-453E-ADED-0888EF23C84F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{350B61DC-CAB0-453E-ADED-0888EF23C84F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{735AD6F7-CF9E-4106-996B-52798CD018C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{735AD6F7-CF9E-4106-996B-52798CD018C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{735AD6F7-CF9E-4106-996B-52798CD018C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{735AD6F7-CF9E-4106-996B-52798CD018C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0E705F4-A528-4559-8EFD-175E95D34AC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0E705F4-A528-4559-8EFD-175E95D34AC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0E705F4-A528-4559-8EFD-175E95D34AC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0E705F4-A528-4559-8EFD-175E95D34AC9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5DA0B65F-9134-4E5D-8C17-7008F9178534}
+	EndGlobalSection
+EndGlobal
