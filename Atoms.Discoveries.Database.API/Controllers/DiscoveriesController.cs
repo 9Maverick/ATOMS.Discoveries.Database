@@ -1,8 +1,8 @@
-using Atoms.Discoveries.Database.API.Data.Converters;
 using Atoms.Discoveries.Database.API.Data.DTO;
 using Atoms.Discoveries.Database.API.Data.Models;
 using Atoms.Discoveries.Database.Data;
 using Atoms.Discoveries.Database.Domain;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +14,12 @@ public class DiscoveriesController : ControllerBase
 {
 
 	private readonly DiscoveriesContext _context;
+	private readonly IMapper _mapper;
 
-	public DiscoveriesController(DiscoveriesContext context)
+	public DiscoveriesController(DiscoveriesContext context, IMapper mapper)
 	{
 		_context = context;
+		_mapper = mapper;
 	}
 
 	[HttpGet]
@@ -52,13 +54,13 @@ public class DiscoveriesController : ControllerBase
 		{
 			return NotFound();
 		}
-		return DiscoveryConverters.DiscoveryToDTO(discovery);
+		return _mapper.Map<Discovery, DiscoveryDTO>(discovery);
 	}
 
 	[HttpPost]
 	public async Task<ActionResult<Discovery>> PostDiscovery(DiscoveryModel discoveryModel)
 	{
-		var discovery = DiscoveryConverters.DiscoveryFromModel(discoveryModel);
+		var discovery = _mapper.Map<DiscoveryModel, Discovery>(discoveryModel);
 		_context.Discoveries.Add(discovery);
 
 		await _context.SaveChangesAsync();
@@ -74,7 +76,7 @@ public class DiscoveriesController : ControllerBase
 			return NotFound();
 		}
 
-		var discovery = DiscoveryConverters.DiscoveryFromModel(discoveryModel);
+		var discovery = _mapper.Map<DiscoveryModel, Discovery>(discoveryModel);
 		discovery.Id = discoveryId;
 		_context.Entry(discovery).State = EntityState.Modified;
 
@@ -129,7 +131,7 @@ public class DiscoveriesController : ControllerBase
 		{
 			return NotFound();
 		}
-		return ImageConverters.ImageToDTO(image);
+		return _mapper.Map<Image, ImageDTO>(image);
 	}
 
 	[HttpPost("{discoveryId}/Images")]

@@ -1,8 +1,8 @@
-using Atoms.Discoveries.Database.API.Data.Converters;
 using Atoms.Discoveries.Database.API.Data.DTO;
 using Atoms.Discoveries.Database.API.Data.Models;
 using Atoms.Discoveries.Database.Data;
 using Atoms.Discoveries.Database.Domain;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +14,12 @@ public class MultiToolsController : ControllerBase
 {
 
 	private readonly DiscoveriesContext _context;
+	private readonly IMapper _mapper;
 
-	public MultiToolsController(DiscoveriesContext context)
+	public MultiToolsController(DiscoveriesContext context, IMapper mapper)
 	{
 		_context = context;
+		_mapper = mapper;
 	}
 
 	[HttpGet]
@@ -58,13 +60,13 @@ public class MultiToolsController : ControllerBase
 		{
 			return NotFound();
 		}
-		return MultiToolConverters.MultiToolToDTO(multiTool);
+		return _mapper.Map<MultiTool, MultiToolDTO>(multiTool);
 	}
 
 	[HttpPost]
 	public async Task<ActionResult<MultiTool>> PostMultiTool(MultiToolModel multiToolModel)
 	{
-		var multiTool = MultiToolConverters.MultiToolFromModel(multiToolModel);
+		var multiTool = _mapper.Map<MultiToolModel, MultiTool>(multiToolModel);
 		var planet = await _context.Planets.FindAsync(multiTool.PlanetId);
 		var system = await _context.SolarSystems.FindAsync(multiTool.SolarSystemId);
 		if (planet != null)
@@ -91,7 +93,7 @@ public class MultiToolsController : ControllerBase
 			return NotFound();
 		}
 
-		var multiTool = MultiToolConverters.MultiToolFromModel(multiToolModel);
+		var multiTool = _mapper.Map<MultiToolModel, MultiTool>(multiToolModel);
 		_context.Entry(multiTool).State = EntityState.Modified;
 
 		await _context.SaveChangesAsync();

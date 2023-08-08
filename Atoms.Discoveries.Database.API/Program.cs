@@ -1,3 +1,4 @@
+using Atoms.Discoveries.Database.API.Data.Helpers;
 using Atoms.Discoveries.Database.Infrastructure;
 using Microsoft.IdentityModel.Logging;
 
@@ -19,6 +20,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAutoMapper(typeof(AutoMappingProfiles).Assembly);
 
 var app = builder.Build();
 

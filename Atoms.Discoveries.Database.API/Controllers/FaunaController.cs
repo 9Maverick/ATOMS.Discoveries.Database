@@ -1,8 +1,8 @@
-using Atoms.Discoveries.Database.API.Data.Converters;
 using Atoms.Discoveries.Database.API.Data.DTO;
 using Atoms.Discoveries.Database.API.Data.Models;
 using Atoms.Discoveries.Database.Data;
 using Atoms.Discoveries.Database.Domain;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +14,12 @@ public class FaunaController : ControllerBase
 {
 
 	private readonly DiscoveriesContext _context;
+	private readonly IMapper _mapper;
 
-	public FaunaController(DiscoveriesContext context)
+	public FaunaController(DiscoveriesContext context, IMapper mapper)
 	{
 		_context = context;
+		_mapper = mapper;
 	}
 
 	[HttpGet]
@@ -56,13 +58,13 @@ public class FaunaController : ControllerBase
 		{
 			return NotFound();
 		}
-		return FaunaConverters.FaunaToDTO(fauna);
+		return _mapper.Map<Fauna, FaunaDTO>(fauna);
 	}
 
 	[HttpPost]
 	public async Task<ActionResult<Fauna>> PostFauna(FaunaModel faunaModel)
 	{
-		var fauna = FaunaConverters.FaunaFromModel(faunaModel);
+		var fauna = _mapper.Map<FaunaModel, Fauna>(faunaModel);
 		var planet = await _context.Planets.FindAsync(fauna.PlanetId);
 		var system = await _context.SolarSystems.FindAsync(fauna.SolarSystemId);
 		if (planet != null)
@@ -89,7 +91,7 @@ public class FaunaController : ControllerBase
 			return NotFound();
 		}
 
-		var fauna = FaunaConverters.FaunaFromModel(faunaModel);
+		var fauna = _mapper.Map<FaunaModel, Fauna>(faunaModel);
 		_context.Entry(fauna).State = EntityState.Modified;
 
 		await _context.SaveChangesAsync();

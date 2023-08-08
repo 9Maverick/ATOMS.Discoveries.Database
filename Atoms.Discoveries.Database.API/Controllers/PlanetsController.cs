@@ -1,8 +1,8 @@
-using Atoms.Discoveries.Database.API.Data.Converters;
 using Atoms.Discoveries.Database.API.Data.DTO;
 using Atoms.Discoveries.Database.API.Data.Models;
 using Atoms.Discoveries.Database.Data;
 using Atoms.Discoveries.Database.Domain;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +14,12 @@ public class PlanetsController : ControllerBase
 {
 
 	private readonly DiscoveriesContext _context;
+	private readonly IMapper _mapper;
 
-	public PlanetsController(DiscoveriesContext context)
+	public PlanetsController(DiscoveriesContext context, IMapper mapper)
 	{
 		_context = context;
+		_mapper = mapper;
 	}
 
 	[HttpGet]
@@ -58,13 +60,13 @@ public class PlanetsController : ControllerBase
 		{
 			return NotFound();
 		}
-		return PlanetConverters.PlanetToDTO(planet);
+		return _mapper.Map<Planet, PlanetDTO>(planet);
 	}
 
 	[HttpPost]
 	public async Task<ActionResult<Planet>> PostPlanet(PlanetModel planetModel)
 	{
-		var planet = PlanetConverters.PlanetFromModel(planetModel);
+		var planet = _mapper.Map<PlanetModel, Planet>(planetModel);
 		var system = await _context.SolarSystems.FindAsync(planetModel.SolarSystemId);
 		if (planet != null)
 		{
@@ -84,7 +86,7 @@ public class PlanetsController : ControllerBase
 			return NotFound();
 		}
 
-		var planet = PlanetConverters.PlanetFromModel(planetModel);
+		var planet = _mapper.Map<PlanetModel, Planet>(planetModel);
 		_context.Entry(planet).State = EntityState.Modified;
 
 		await _context.SaveChangesAsync();
@@ -145,13 +147,13 @@ public class PlanetsController : ControllerBase
 		{
 			return NotFound();
 		}
-		return PlanetDiscoveryConverters.PlanetDiscoveryToDTO(planetDiscovery);
+		return _mapper.Map<PlanetDiscovery, PlanetDiscoveryDTO>(planetDiscovery);
 	}
 
 	[HttpPost("{planetId}/PlanetDiscoveries")]
 	public async Task<ActionResult<PlanetDiscovery>> PostPlanetDiscovery(PlanetDiscoveryModel planetDiscoveryModel, ulong planetId)
 	{
-		var planetDiscovery = PlanetDiscoveryConverters.PlanetDiscoveryFromModel(planetDiscoveryModel);
+		var planetDiscovery = _mapper.Map<PlanetDiscoveryModel, PlanetDiscovery>(planetDiscoveryModel);
 		planetDiscovery.PlanetId = planetId;
 		var planet = await _context.Planets.FindAsync(planetDiscovery.PlanetId);
 		var system = await _context.SolarSystems.FindAsync(planetDiscovery.SolarSystemId);
@@ -179,7 +181,7 @@ public class PlanetsController : ControllerBase
 			return NotFound();
 		}
 
-		var planetDiscovery = PlanetDiscoveryConverters.PlanetDiscoveryFromModel(planetDiscoveryModel);
+		var planetDiscovery = _mapper.Map<PlanetDiscoveryModel, PlanetDiscovery>(planetDiscoveryModel);
 		_context.Entry(planetDiscovery).State = EntityState.Modified;
 
 		await _context.SaveChangesAsync();

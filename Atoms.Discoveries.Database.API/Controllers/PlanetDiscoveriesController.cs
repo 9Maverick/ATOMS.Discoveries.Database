@@ -1,8 +1,8 @@
-using Atoms.Discoveries.Database.API.Data.Converters;
 using Atoms.Discoveries.Database.API.Data.DTO;
 using Atoms.Discoveries.Database.API.Data.Models;
 using Atoms.Discoveries.Database.Data;
 using Atoms.Discoveries.Database.Domain;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +14,12 @@ public class PlanetDiscoveriesController : ControllerBase
 {
 
 	private readonly DiscoveriesContext _context;
+	private readonly IMapper _mapper;
 
-	public PlanetDiscoveriesController(DiscoveriesContext context)
+	public PlanetDiscoveriesController(DiscoveriesContext context, IMapper mapper)
 	{
 		_context = context;
+		_mapper = mapper;
 	}
 
 	[HttpGet]
@@ -54,13 +56,13 @@ public class PlanetDiscoveriesController : ControllerBase
 		{
 			return NotFound();
 		}
-		return PlanetDiscoveryConverters.PlanetDiscoveryToDTO(planetDiscovery);
+		return _mapper.Map<PlanetDiscovery, PlanetDiscoveryDTO>(planetDiscovery);
 	}
 
 	[HttpPost]
 	public async Task<ActionResult<PlanetDiscovery>> PostPlanetDiscovery(PlanetDiscoveryModel planetDiscoveryModel)
 	{
-		var planetDiscovery = PlanetDiscoveryConverters.PlanetDiscoveryFromModel(planetDiscoveryModel);
+		var planetDiscovery = _mapper.Map<PlanetDiscoveryModel, PlanetDiscovery>(planetDiscoveryModel);
 		var planet = await _context.Planets.FindAsync(planetDiscovery.PlanetId);
 		var system = await _context.SolarSystems.FindAsync(planetDiscovery.SolarSystemId);
 		if (planet != null)
@@ -87,7 +89,7 @@ public class PlanetDiscoveriesController : ControllerBase
 			return NotFound();
 		}
 
-		var planetDiscovery = PlanetDiscoveryConverters.PlanetDiscoveryFromModel(planetDiscoveryModel);
+		var planetDiscovery = _mapper.Map<PlanetDiscoveryModel, PlanetDiscovery>(planetDiscoveryModel);
 		_context.Entry(planetDiscovery).State = EntityState.Modified;
 
 		await _context.SaveChangesAsync();

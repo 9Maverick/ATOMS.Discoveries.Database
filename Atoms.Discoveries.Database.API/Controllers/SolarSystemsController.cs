@@ -1,8 +1,8 @@
-using Atoms.Discoveries.Database.API.Data.Converters;
 using Atoms.Discoveries.Database.API.Data.DTO;
 using Atoms.Discoveries.Database.API.Data.Models;
 using Atoms.Discoveries.Database.Data;
 using Atoms.Discoveries.Database.Domain;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +14,11 @@ public class SolarSystemsController : ControllerBase
 {
 
 	private readonly DiscoveriesContext _context;
-
-	public SolarSystemsController(DiscoveriesContext context)
+	private readonly IMapper _mapper;
+	public SolarSystemsController(DiscoveriesContext context, IMapper mapper)
 	{
 		_context = context;
+		_mapper = mapper;
 	}
 
 	[HttpGet]
@@ -54,13 +55,13 @@ public class SolarSystemsController : ControllerBase
 		{
 			return NotFound();
 		}
-		return SolarSystemConverters.SolarSystemToDTO(solarSystem);
+		return _mapper.Map<SolarSystem, SolarSystemDTO>(solarSystem);
 	}
 
 	[HttpPost]
 	public async Task<ActionResult<SolarSystem>> PostSolarSystem(SolarSystemModel solarSystemModel)
 	{
-		var solarSystem = SolarSystemConverters.SolarSystemFromModel(solarSystemModel);
+		var solarSystem = _mapper.Map<SolarSystemModel, SolarSystem>(solarSystemModel);
 		_context.SolarSystems.Add(solarSystem);
 		await _context.SaveChangesAsync();
 
@@ -75,7 +76,7 @@ public class SolarSystemsController : ControllerBase
 			return NotFound();
 		}
 
-		var solarSystem = SolarSystemConverters.SolarSystemFromModel(solarSystemModel);
+		var solarSystem = _mapper.Map<SolarSystemModel, SolarSystem>(solarSystemModel);
 		_context.Entry(solarSystem).State = EntityState.Modified;
 
 		await _context.SaveChangesAsync();
@@ -136,13 +137,13 @@ public class SolarSystemsController : ControllerBase
 		{
 			return NotFound();
 		}
-		return SystemDiscoveryConverters.SystemDiscoveryToDTO(systemDiscovery);
+		return _mapper.Map<SystemDiscovery, SystemDiscoveryDTO>(systemDiscovery);
 	}
 
 	[HttpPost("{solarSystemId}/SystemDiscoveries")]
 	public async Task<ActionResult<SystemDiscovery>> PostSystemDiscovery(SystemDiscoveryModel systemDiscoveryModel, ulong solarSystemId)
 	{
-		var systemDiscovery = SystemDiscoveryConverters.SystemDiscoveryFromModel(systemDiscoveryModel);
+		var systemDiscovery = _mapper.Map<SystemDiscoveryModel, SystemDiscovery>(systemDiscoveryModel);
 		systemDiscovery.SolarSystemId = solarSystemId;
 		var system = await _context.SolarSystems.FindAsync(systemDiscovery.SolarSystemId);
 		if (system != null)
@@ -163,7 +164,7 @@ public class SolarSystemsController : ControllerBase
 			return NotFound();
 		}
 
-		var systemDiscovery = SystemDiscoveryConverters.SystemDiscoveryFromModel(systemDiscoveryModel);
+		var systemDiscovery = _mapper.Map<SystemDiscoveryModel, SystemDiscovery>(systemDiscoveryModel);
 		_context.Entry(systemDiscovery).State = EntityState.Modified;
 
 		await _context.SaveChangesAsync();

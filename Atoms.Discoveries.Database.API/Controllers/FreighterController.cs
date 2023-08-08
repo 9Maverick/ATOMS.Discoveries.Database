@@ -1,8 +1,8 @@
-using Atoms.Discoveries.Database.API.Data.Converters;
 using Atoms.Discoveries.Database.API.Data.DTO;
 using Atoms.Discoveries.Database.API.Data.Models;
 using Atoms.Discoveries.Database.Data;
 using Atoms.Discoveries.Database.Domain;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +14,12 @@ public class FreightersController : ControllerBase
 {
 
 	private readonly DiscoveriesContext _context;
+	private readonly IMapper _mapper;
 
-	public FreightersController(DiscoveriesContext context)
+	public FreightersController(DiscoveriesContext context, IMapper mapper)
 	{
 		_context = context;
+		_mapper = mapper;
 	}
 
 	[HttpGet]
@@ -55,13 +57,13 @@ public class FreightersController : ControllerBase
 		{
 			return NotFound();
 		}
-		return FreighterConverters.FreighterToDTO(freighter);
+		return _mapper.Map<Freighter, FreighterDTO>(freighter);
 	}
 
 	[HttpPost]
 	public async Task<ActionResult<Freighter>> PostFreighter(FreighterModel freighterModel)
 	{
-		var freighter = FreighterConverters.FreighterFromModel(freighterModel);
+		var freighter = _mapper.Map<FreighterModel, Freighter>(freighterModel);
 		var system = await _context.SolarSystems.FindAsync(freighterModel.SolarSystemId);
 		if (freighter != null)
 		{
@@ -81,7 +83,7 @@ public class FreightersController : ControllerBase
 			return NotFound();
 		}
 
-		var freighter = FreighterConverters.FreighterFromModel(freighterModel);
+		var freighter = _mapper.Map<FreighterModel, Freighter>(freighterModel);
 		_context.Entry(freighter).State = EntityState.Modified;
 
 		await _context.SaveChangesAsync();

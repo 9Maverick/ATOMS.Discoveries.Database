@@ -1,8 +1,8 @@
-using Atoms.Discoveries.Database.API.Data.Converters;
 using Atoms.Discoveries.Database.API.Data.DTO;
 using Atoms.Discoveries.Database.API.Data.Models;
 using Atoms.Discoveries.Database.Data;
 using Atoms.Discoveries.Database.Domain;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +14,12 @@ public class FrigatesController : ControllerBase
 {
 
 	private readonly DiscoveriesContext _context;
+	private readonly IMapper _mapper;
 
-	public FrigatesController(DiscoveriesContext context)
+	public FrigatesController(DiscoveriesContext context, IMapper mapper)
 	{
 		_context = context;
+		_mapper = mapper;
 	}
 
 	[HttpGet]
@@ -54,13 +56,13 @@ public class FrigatesController : ControllerBase
 		{
 			return NotFound();
 		}
-		return FrigateConverters.FrigateToDTO(frigate);
+		return _mapper.Map<Frigate, FrigateDTO>(frigate);
 	}
 
 	[HttpPost]
 	public async Task<ActionResult<Frigate>> PostFrigate(FrigateModel frigateModel)
 	{
-		var frigate = FrigateConverters.FrigateFromModel(frigateModel);
+		var frigate = _mapper.Map<FrigateModel, Frigate>(frigateModel);
 		var system = await _context.SolarSystems.FindAsync(frigateModel.SolarSystemId);
 		if (frigate != null)
 		{
@@ -80,7 +82,7 @@ public class FrigatesController : ControllerBase
 			return NotFound();
 		}
 
-		var frigate = FrigateConverters.FrigateFromModel(frigateModel);
+		var frigate = _mapper.Map<FrigateModel, Frigate>(frigateModel);
 		_context.Entry(frigate).State = EntityState.Modified;
 
 		await _context.SaveChangesAsync();

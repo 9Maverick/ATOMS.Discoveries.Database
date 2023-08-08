@@ -1,8 +1,8 @@
-using Atoms.Discoveries.Database.API.Data.Converters;
 using Atoms.Discoveries.Database.API.Data.DTO;
 using Atoms.Discoveries.Database.API.Data.Models;
 using Atoms.Discoveries.Database.Data;
 using Atoms.Discoveries.Database.Domain;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +14,12 @@ public class ShipsController : ControllerBase
 {
 
 	private readonly DiscoveriesContext _context;
+	private readonly IMapper _mapper;
 
-	public ShipsController(DiscoveriesContext context)
+	public ShipsController(DiscoveriesContext context, IMapper mapper)
 	{
 		_context = context;
+		_mapper = mapper;
 	}
 
 	[HttpGet]
@@ -58,13 +60,13 @@ public class ShipsController : ControllerBase
 		{
 			return NotFound();
 		}
-		return ShipConverters.ShipToDTO(ship);
+		return _mapper.Map<Ship, ShipDTO>(ship);
 	}
 
 	[HttpPost]
 	public async Task<ActionResult<Ship>> PostShip(ShipModel shipModel)
 	{
-		var ship = ShipConverters.ShipFromModel(shipModel);
+		var ship = _mapper.Map<ShipModel, Ship>(shipModel);
 		var planet = await _context.Planets.FindAsync(ship.PlanetId);
 		var system = await _context.SolarSystems.FindAsync(ship.SolarSystemId);
 		if (planet != null)
@@ -91,7 +93,7 @@ public class ShipsController : ControllerBase
 			return NotFound();
 		}
 
-		var ship = ShipConverters.ShipFromModel(shipModel);
+		var ship = _mapper.Map<ShipModel, Ship>(shipModel);
 		_context.Entry(ship).State = EntityState.Modified;
 
 		await _context.SaveChangesAsync();

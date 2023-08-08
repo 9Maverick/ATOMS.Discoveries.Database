@@ -1,8 +1,8 @@
-using Atoms.Discoveries.Database.API.Data.Converters;
 using Atoms.Discoveries.Database.API.Data.DTO;
 using Atoms.Discoveries.Database.API.Data.Models;
 using Atoms.Discoveries.Database.Data;
 using Atoms.Discoveries.Database.Domain;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +14,12 @@ public class UsersController : ControllerBase
 {
 
 	private readonly DiscoveriesContext _context;
+	private readonly IMapper _mapper;
 
-	public UsersController(DiscoveriesContext context)
+	public UsersController(DiscoveriesContext context, IMapper mapper)
 	{
 		_context = context;
+		_mapper = mapper;
 	}
 
 	[HttpGet]
@@ -44,7 +46,7 @@ public class UsersController : ControllerBase
 		{
 			return NotFound();
 		}
-		return UserConverters.UserToDTO(user);
+		return _mapper.Map<User, UserDTO>(user);
 	}
 
 	[HttpPost]
@@ -93,7 +95,7 @@ public class UsersController : ControllerBase
 	public async Task<ActionResult<IEnumerable<DiscoveryDTO>>> GetDiscoveries([FromQuery] PaginationParameters paginationParameters, ulong userId)
 	{
 		return await _context.Discoveries
-			.Where(discovery => discovery.Id == userId)
+			.Where(discovery => discovery.DiscovererId == userId)
 			.Skip((int)paginationParameters.Offset)
 			.Take((int)paginationParameters.Limit)
 			.Select(discovery => new DiscoveryDTO
@@ -126,13 +128,13 @@ public class UsersController : ControllerBase
 		{
 			return NotFound();
 		}
-		return DiscoveryConverters.DiscoveryToDTO(discovery);
+		return _mapper.Map<Discovery, DiscoveryDTO>(discovery);
 	}
 
 	[HttpPost("{userId}/Discoveries")]
 	public async Task<ActionResult<Discovery>> PostDiscovery(DiscoveryModel discoveryModel, ulong userId)
 	{
-		var discovery = DiscoveryConverters.DiscoveryFromModel(discoveryModel);
+		var discovery = _mapper.Map<DiscoveryModel, Discovery>(discoveryModel);
 		discovery.DiscovererId = userId;
 		_context.Discoveries.Add(discovery);
 
@@ -149,7 +151,7 @@ public class UsersController : ControllerBase
 			return NotFound();
 		}
 
-		var discovery = DiscoveryConverters.DiscoveryFromModel(discoveryModel);
+		var discovery = _mapper.Map<DiscoveryModel, Discovery>(discoveryModel);
 		discovery.Id = discoveryId;
 		_context.Entry(discovery).State = EntityState.Modified;
 
